@@ -1,0 +1,22 @@
+name: VarusVoelker
+author: Jan 
+main: de.Jan.Varus.Main
+version: 1.2
+api-version: 1.15
+commands: 
+   volk: 
+   confirmedsetdorfposition: 
+   changedorfposition: 
+   home: 
+   sethome: 
+   spawn:
+   getcoins:
+   remitcoins: 
+   title: 
+   chat: 
+   getitem: 
+   marry: 
+   marryaccept: 
+   marrydeny: 
+   dorf: 
+   checkvillager: 
