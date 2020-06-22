@@ -1,27 +1,21 @@
 package de.Jan.Varus.Events;
 
-import java.sql.Date;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.connorlinfoot.titleapi.TitleAPI;
 
-import de.Jan.Varus.Commands.getItemCommand;
 import de.Jan.Varus.Objects.User;
-import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.PlayerInfoData;
 
 public class JoinEvent implements Listener {
 	public static Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();  
@@ -44,19 +38,17 @@ public class JoinEvent implements Listener {
 		}
 		User user = new User(player, plugin); 
 		setPrefix(player, plugin);
-		event.getPlayer().setWalkSpeed(0.2F);
-		TitleAPI.sendTabTitle(event.getPlayer(), "§7--= §9Varus Präsentiert §7=-- \n§cVölker und Dörfer!", 
-				"§7Dein Volk§8: " + user.getVolk().getPrefix() + user.getVolk().toString().toLowerCase() + "\n"+
+		TitleAPI.sendTabTitle(event.getPlayer(), "§7--= §9Varus Präsentiert §7=-- \n§cVölker und Dörfer §d2!", 
 				"§7Deine Coins§8: §6" + user.getCoins() + "\n" +
 				"§7Dein Zuhause§8: §f" + (int)user.getHome().getX() + " §7|§f " + (int)user.getHome().getY() + " §7|§f " + (int)user.getHome().getZ() + "\n" + 
-				(user.isMarryed() ? "§6Dein Ehepartner§8: §c" + Bukkit.getOfflinePlayer(UUID.fromString(user.getMarry())).getName()+ "\n": "")); 
+				(user.isMarryed() ? "§6Dein Ehepartner§8: §c" + Bukkit.getOfflinePlayer(UUID.fromString(user.getMarry())).getName()+ "\n": "") + 
+		"\n§7--= §8Ränge §7=-- \n§9Administrator §1Senior Moderator §3Entwickler\n §bModerator §aBauarbeiter\n §eÄltester §dVIP");
 
 		event.setJoinMessage("§8[§a+§8] " + event.getPlayer().getDisplayName()); 
 	}
 	public static void setPrefix(Player player, JavaPlugin plugin) {
 		User user = new User(player, plugin); 
 		Team team = null; 
-
 		if (scoreboard.getTeam(player.getName()) != null) {
 			team = scoreboard.getTeam(player.getName());
 		} else {
@@ -64,25 +56,71 @@ public class JoinEvent implements Listener {
 		}
 		
 		if (player.hasPermission("varus.admin")) {
-			team.setSuffix(" §7(§cAdmin§7)");
+			team.setColor(ChatColor.BLUE);
 		} else 
+		if(player.hasPermission("varus.srmod")) {
+			team.setColor(ChatColor.DARK_BLUE);
+		} else 			
 		if (player.hasPermission("varus.dev")) {
-			team.setSuffix(" §7(§bDev§7)");
+			team.setColor(ChatColor.DARK_AQUA);
 		} else 
 		if (player.hasPermission("varus.mod")) {
-			team.setSuffix(" §7(§eMod§7)");
+			team.setColor(ChatColor.AQUA);
+		} else 
+		if(player.hasPermission("varus.ältester")) {
+			team.setColor(ChatColor.YELLOW);
+		} else 
+		if(player.hasPermission("varus.vip")) {
+			team.setColor(ChatColor.LIGHT_PURPLE);
+		} else 
+		if(player.hasPermission("varus.verifiziert")) {
+			team.setColor(ChatColor.DARK_AQUA);
 		}
+		else {
+			team.setColor(ChatColor.GRAY);
+		}
+
+		player.setDisplayName(user.getVolk().getPrefix() + (user.getTitle() != null ? user.getTitle() : user.getVolk().toString()) + " §7| " + returenRankPrefix(player) + player.getName() + (user.isMarryed() ? " §8[" + user.getVolk().getPrefix() + "M§8]" : ""));
+
 		team.addPlayer(player);
 		if(user.getTitle() == null) {
 			team.setPrefix(user.getVolk().getPrefix() + user.getVolk().toString() + " §7| ");
-			player.setDisplayName(user.getVolk().getPrefix() + user.getVolk().toString() + " §7| " + user.getVolk().getPrefix() + player.getName() + (user.isMarryed() ? " §8["+user.getVolk().getPrefix()+"M§8]" : ""));
 		} else {
 			team.setPrefix(user.getVolk().getPrefix() + user.getTitle() + " §7| ");
-			player.setDisplayName(user.getVolk().getPrefix() + user.getTitle() + " §7| " + user.getVolk().getPrefix() + player.getName() + (user.isMarryed() ? " §8[" + user.getVolk().getPrefix() + "M§8]" : ""));
+			team.setSuffix(" §7(" + user.getVolk().getPrefix() + user.getVolk().name() + "§7)");
 		}
-		
+		player.setScoreboard(scoreboard);
 		for(Player players : Bukkit.getOnlinePlayers()) {
 			players.setScoreboard(scoreboard);
 		}
 	}
+	
+	private static String returenRankPrefix(Player player) {
+		if (player.hasPermission("varus.admin")) {
+			return "§9"; 
+		} else 
+		if(player.hasPermission("varus.srmod")) {
+			return "§1"; 
+		} else 			
+		if (player.hasPermission("varus.dev")) {
+			return "§3"; 
+		} else 
+		if (player.hasPermission("varus.mod")) {
+			return "§b"; 
+		} else 
+		if(player.hasPermission("varus.ältester")) {
+			return "§e"; 
+		} else 
+		if(player.hasPermission("varus.vip")) {
+			return "§d"; 
+		} else 
+		if(player.hasPermission("varus.verifiziert")) {
+			return "§5"; 
+		}
+		else {
+			return "§7"; 
+		}
+
+	}
+	
 }

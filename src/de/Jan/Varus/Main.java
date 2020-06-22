@@ -108,6 +108,7 @@ public class Main extends JavaPlugin {
 		
 		Bukkit.getPluginManager().registerEvents(new VampirEffektEvent(this), this);
 		
+		
 		Bukkit.getPluginCommand("spawn").setExecutor(new spawnCommand(this));
 		Bukkit.getPluginCommand("home").setExecutor(new homeCommand(this));
 		Bukkit.getPluginCommand("sethome").setExecutor(new sethomeCommand(this));
