@@ -31,7 +31,6 @@ public enum mobMoney {
 	TUHRTLE(3, EntityType.TURTLE),
 	WITCH(30, EntityType.WITCH), 
 	WITHERSKLETT(25, EntityType.WITHER_SKELETON), 
-	PIGMAN(1, EntityType.PIG_ZOMBIE),
 	PLAYER(115, EntityType.PLAYER),
 	ENDERDRACHE(1000, EntityType.ENDER_DRAGON),
 	WITHERBOSS(666, EntityType.WITHER); 

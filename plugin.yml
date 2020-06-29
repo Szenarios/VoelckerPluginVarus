@@ -19,4 +19,6 @@ commands:
    marryaccept: 
    marrydeny: 
    dorf: 
-   checkvillager: 
+   checkvillager:
+   changename:  
+   findpet: 

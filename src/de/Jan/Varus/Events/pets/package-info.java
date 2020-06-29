@@ -5,4 +5,4 @@
  * @author Admin
  *
  */
-package de.Jan.Varus.Events.Wachen.Pets;
+package de.Jan.Varus.Events.pets;

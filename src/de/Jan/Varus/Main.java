@@ -1,6 +1,7 @@
 package de.Jan.Varus;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,12 +10,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Jan.Varus.Commands.changeDorfPositionCommand;
+import de.Jan.Varus.Commands.changeNameCommand;
 import de.Jan.Varus.Commands.chatCommand;
 import de.Jan.Varus.Commands.confirmedSetDorfPositionCommand;
 import de.Jan.Varus.Commands.dorfCommand;
+import de.Jan.Varus.Commands.findpetCommand;
 import de.Jan.Varus.Commands.getCoinsCommand;
 import de.Jan.Varus.Commands.getItemCommand;
 import de.Jan.Varus.Commands.homeCommand;
@@ -58,6 +63,11 @@ import de.Jan.Varus.Events.SpezialItem.SchwerDesHänkers;
 import de.Jan.Varus.Events.SpezialItem.axtDesDonnersEvent;
 import de.Jan.Varus.Events.SpezialItem.stabDesWindesEvent;
 import de.Jan.Varus.Events.Wachen.WacheTargetEntity;
+import de.Jan.Varus.Events.pets.OwnerInventroyClick;
+import de.Jan.Varus.Events.pets.TameInventroyClick;
+import de.Jan.Varus.Events.pets.antiPetDamageEvent;
+import de.Jan.Varus.Events.pets.buyEntityEvent;
+import de.Jan.Varus.Events.pets.playerMoveEvent;
 import de.Jan.Varus.Objects.Dorf;
 import de.Jan.Varus.Objects.Völker;
 
@@ -65,9 +75,11 @@ public class Main extends JavaPlugin {
 	public static String PREFIX = "§9VARUS §8| §7"; 
 	public static String NOPERMISSIONS = PREFIX + "§cDu Hast keine Berechtigung diesen Befehl auszuführen!"; 
 	private static File dorfFile = new File("plugins\\VarusVoelker\\dörfer.yml"); 
-	private static File chestlogFile = new File("plugins\\VarusVoelker\\chestlog.yml"); 
+	private static File chestlogFile = new File("plugins\\VarusVoelker\\chestlog.yml");
+	private static File petFile = new File("plugins\\VarusVoelker\\pet.yml"); 
 	MobsScanner scanner; 
 	
+	public static FileConfiguration pets; 
 	public static FileConfiguration dorf; 
 	public static FileConfiguration chestlog; 
 	@Override
@@ -108,6 +120,12 @@ public class Main extends JavaPlugin {
 		
 		Bukkit.getPluginManager().registerEvents(new VampirEffektEvent(this), this);
 		
+		Bukkit.getPluginManager().registerEvents(new buyEntityEvent(this), this);
+		Bukkit.getPluginManager().registerEvents(new antiPetDamageEvent(), this);
+		Bukkit.getPluginManager().registerEvents(new playerMoveEvent(), this);
+		Bukkit.getPluginManager().registerEvents(new TameInventroyClick(this), this);
+		Bukkit.getPluginManager().registerEvents(new OwnerInventroyClick(), this);
+
 		
 		Bukkit.getPluginCommand("spawn").setExecutor(new spawnCommand(this));
 		Bukkit.getPluginCommand("home").setExecutor(new homeCommand(this));
@@ -127,6 +145,10 @@ public class Main extends JavaPlugin {
 		
 		Bukkit.getPluginCommand("dorf").setExecutor(new dorfCommand(this));
 		Bukkit.getPluginCommand("checkvillager").setExecutor(new checkVillagerCommand());
+		Bukkit.getPluginCommand("changename").setExecutor(new changeNameCommand());
+		findpetCommand findpetCommand = new findpetCommand(); 
+		Bukkit.getPluginCommand("findpet").setExecutor(findpetCommand);
+		Bukkit.getPluginManager().registerEvents(findpetCommand, this);
 		
 		scanner = new MobsScanner(this); 
 		scanner.go();
@@ -159,20 +181,32 @@ public class Main extends JavaPlugin {
 			} 
 			Bukkit.getConsoleSender().sendMessage(PREFIX + "§aChestlog YML wurde erfolgreich erstellt!"); 
 		}
+		if(!petFile.exists()) {
+			petFile.getParentFile().mkdirs(); 
+			try {
+				petFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+			Bukkit.getConsoleSender().sendMessage(PREFIX + "§aPets YML wurde erfolgreich erstellt!"); 
+		}
 		dorf = new YamlConfiguration(); 
 		chestlog = new YamlConfiguration(); 
+		pets = new YamlConfiguration(); 
 		try {
 			dorf.load(dorfFile);
 			Bukkit.getConsoleSender().sendMessage(PREFIX + "§aDörfer YML wurde erfolgreich geladen!"); 
 			chestlog.load(chestlogFile);
 			Bukkit.getConsoleSender().sendMessage(PREFIX + "§aChestlog YML wurde erfolgreich erstellt!"); 
+			pets.load(petFile);
+			Bukkit.getConsoleSender().sendMessage(PREFIX + "§aPets YML wurde erfolgreich erstellt!"); 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	public static void SaveDrof() {
 		try {
-			dorf.save(dorfFile);
+			dorf.save(dorfFile);	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -180,6 +214,13 @@ public class Main extends JavaPlugin {
 	public static void SaveChestLog() { 
 		try {
 			chestlog.save(chestlogFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void SavePets() { 
+		try {
+			pets.save(petFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -258,5 +299,15 @@ public class Main extends JavaPlugin {
 	}
 	public static int returnRDM(int max, int min) {
 		return (int) (Math.random() * (max - min + 1) + min);
+	}
+	public static void ChangeMeta(ItemStack item, String name, String...strings) { 
+		ItemMeta meta = item.getItemMeta(); 
+		meta.setDisplayName(name);
+		ArrayList<String> list = new ArrayList<>(); 
+		for (int i = 0; i < strings.length; i++) {
+			list.add(strings[i]); 
+		}
+		meta.setLore(list);
+		item.setItemMeta(meta); 
 	}
 }
