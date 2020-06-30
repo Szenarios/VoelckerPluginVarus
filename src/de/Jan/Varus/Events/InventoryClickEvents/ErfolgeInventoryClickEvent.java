@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Jan.Varus.Main;
-import de.Jan.Varus.Events.JoinEvent;
+import de.Jan.Varus.Events.essentials.JoinEvent;
 import de.Jan.Varus.Objects.User;
 
 public class ErfolgeInventoryClickEvent implements Listener {

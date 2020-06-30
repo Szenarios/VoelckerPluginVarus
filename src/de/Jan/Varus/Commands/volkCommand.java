@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Jan.Varus.Main;
-import de.Jan.Varus.Events.pingEvent;
+import de.Jan.Varus.Events.essentials.pingEvent;
 import de.Jan.Varus.Objects.User;
 import de.Jan.Varus.Objects.Völker;
 

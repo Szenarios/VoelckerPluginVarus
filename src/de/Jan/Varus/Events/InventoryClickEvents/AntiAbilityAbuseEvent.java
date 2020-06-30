@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Jan.Varus.Main;
-import de.Jan.Varus.Events.FeeEffektEvent;
+import de.Jan.Varus.Events.Effekte.FeeEffektEvent;
 
 public class AntiAbilityAbuseEvent implements Listener  {
 	JavaPlugin plugin; 

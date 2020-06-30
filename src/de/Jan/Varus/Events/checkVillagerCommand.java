@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.Jan.Varus.Main;
+import de.Jan.Varus.Events.essentials.PlayerDieEvent;
 
 public class checkVillagerCommand implements CommandExecutor {
 

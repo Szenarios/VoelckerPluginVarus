@@ -13,10 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.connorlinfoot.titleapi.TitleAPI;
 
-import de.Jan.Varus.Events.FeeEffektEvent;
-import de.Jan.Varus.Events.JoinEvent;
-import de.Jan.Varus.Events.KoboldEffektEvent;
-import de.Jan.Varus.Events.WikingerEffektEvent;
+import de.Jan.Varus.Events.Effekte.FeeEffektEvent;
+import de.Jan.Varus.Events.Effekte.KoboldEffektEvent;
+import de.Jan.Varus.Events.Effekte.WikingerEffektEvent;
+import de.Jan.Varus.Events.essentials.JoinEvent;
 import de.Jan.Varus.Objects.Dorf;
 import de.Jan.Varus.Objects.User;
 import de.Jan.Varus.Objects.Völker;

@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.Jan.Varus.Main;
-import de.Jan.Varus.Events.FeeEffektEvent;
-import de.Jan.Varus.Events.KoboldEffektEvent;
-import de.Jan.Varus.Events.VampirEffektEvent;
-import de.Jan.Varus.Events.WikingerEffektEvent;
+import de.Jan.Varus.Events.Effekte.FeeEffektEvent;
+import de.Jan.Varus.Events.Effekte.KoboldEffektEvent;
+import de.Jan.Varus.Events.Effekte.VampirEffektEvent;
+import de.Jan.Varus.Events.Effekte.WikingerEffektEvent;
 import de.Jan.Varus.Events.SpezialItem.HolzfällerAxtEvent;
 import de.Jan.Varus.Events.SpezialItem.MegaPickeEvent;
 import de.Jan.Varus.Events.SpezialItem.SchwerDesHänkers;
